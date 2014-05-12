@@ -1,0 +1,31 @@
+
+SELECT TR.*, TP.*, TK.*, C.comName, C.sanValue, case when date_sub('$end', INTERVAL 365 DAY) > C.comDateTo then (TR.resScore * C.sanValue * 0.90 * TK.tasQuality / TK.tasTopOzScore) else (TR.resScore * C.sanValue * TK.tasQuality / TK.tasTopOzScore) end as total, (TR.resScore * C.sanValue * (case when date_sub('$end', INTERVAL 365 DAY) > C.comDateTo then 0.90 else 1.0 end) / (TK.tasQuality * 450)) as validity 
+
+FROM    tblResult TR, 
+        tblPilot TP, 
+        tblTask TK, 
+        tblOrigin O, 
+        tblCompetition C 
+        
+WHERE TR.tasPk = TK.tasPk AND TR.pilPk = TP.pilPk and TR.comPk = C.comPk 
+    AND TK.tasDate > '$start' and TK.tasDate < '$end' $restrict 
+    ORDER by TR.pilPk, TR.comPk, (TR.resScore * C.sanValue / (TK.tasQuality * 450)) desc
+
+
+Simple external table - select * link?
+
+ExtResult? separate?
+
+ExtTask
+    tasDate
+    tasName
+    sanValue
+    tasQuality
+    tasTopScore
+    resScore
+    pilPk
+
+
+join tblPilot
+
+
